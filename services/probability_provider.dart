@@ -24,7 +24,7 @@ class ProbabilityProvider {
     final star = state.currentStar;
 
     if (state.isEvent51015Active() || state.isPityActive()) {
-      return 1.00; // 100% success rate for these special events
+      return 1.00; // 100% success rate for these special states
     }
     return _table.getSuccessRate(star);
   }

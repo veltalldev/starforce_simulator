@@ -1,57 +1,55 @@
-# Starforce Sim Project: Functional Requirements and Implementation Summary
+## Starforce Simulation TODO
 
-## Functional Requirements
-This project involves creating a simulation system for equipment upgrading in a game setting. The core functionalities are defined as follows:
+### What’s Done
+- [x] **Providers**:
+  - [x] `ProbabilityProvider`: Handles success, fail-maintain, fail-decrease, and fail-destroy rates based on the current state and configuration.
+  - [x] `CostProvider`: Calculates the cost of each upgrade attempt, considering safeguard, events, and base costs.
+  
+- [x] **State and Config**:
+  - [x] `SimulationState`: Tracks dynamic conditions like current star, pity status, safeguard, event activity, and failure counts.
+  - [x] `SimulationConfig`: Holds static configuration settings like safeguard-enabled, event flags, meso budget, equipment count, etc.
 
-### 1. **Equipment Class**
-   - **Purpose**: Model an item that can be upgraded, with properties for its current star level and destruction status.
-   - **Methods**:
-     - `upgradeStar()`: Increase the star level by one.
-     - `decreaseStar()`: Decrease the star level by one.
-     - `destroy()`: Mark the item as destroyed.
+### What Still Needs to Happen
 
-### 2. **Upgrade Result Enum**
-   - **Description**: Enumerate possible outcomes of an upgrade attempt—success, maintain (no change), decrease, and destruction.
+#### 1. Core Simulation Logic
+- [ ] Implement `runSimulation()`:
+  - [ ] Calculate the success rate for each upgrade attempt.
+  - [ ] Apply the result: Increment or decrement the star level based on success or failure.
+  - [ ] Update the `SimulationState` dynamically based on the results (pity, failures, safeguard).
+  - [ ] Deduct meso cost using `CostProvider.getCost()`.
 
-### 3. **Probability Table**
-   - **Functionality**: Store and provide base success and failure probabilities for each star level upgrade attempt.
-   - **Components**:
-     - Success rates, maintain rates, decrease rates, and destroy rates per star level.
+#### 2. Resource (Meso) Management
+- [ ] Track the remaining meso budget (in `SimulationConfig` or `SimulationState`).
+- [ ] Deduct cost for each upgrade attempt.
+- [ ] Stop the simulation if the meso budget is exhausted before reaching the desired star.
 
-### 4. **Cost Calculator**
-   - **Purpose**: Calculate the cost of each upgrade attempt based on the item's level and current star.
-   - **Details**: Costs increase exponentially with higher star levels.
+#### 3. Simulation Configuration
+- [ ] Allow customization of input for simulation:
+  - [ ] Starting star level.
+  - [ ] Target star level.
+  - [ ] Number of trials.
+  - [ ] Initial meso budget.
 
-### 5. **Upgrade Service**
-   - **Role**: Handle the logic of attempting an equipment upgrade using the provided probabilities and cost calculations.
-   - **Features**:
-     - Calculate the outcome based on randomized logic and update equipment status accordingly.
+#### 4. Results Tracking
+- [ ] Capture the following statistics during the simulation:
+  - [ ] Success and failure counts.
+  - [ ] Total meso spent.
+  - [ ] Number of destroyed items (if applicable).
+  - [ ] Stars achieved.
+- [ ] Report statistics:
+  - [ ] Average meso cost per success.
+  - [ ] Destruction rate.
+  - [ ] Success rate for reaching the target star.
 
-### 6. **Probability Provider**
-   - **Previously**: ProbabilityModifier
-   - **Current Role**: Provide and modify probabilities based on game mechanics like the Pity System, Event boosts, and Safeguards.
+#### 5. Final Reporting/Visualization
+- [ ] Generate a report of the results:
+  - [ ] Print the results in the console.
+  - [ ] Optionally save as CSV or JSON for detailed analysis.
+- [ ] Optional: Add graphing or visualization of the results (e.g., cost vs. success rate).
 
-### 7. **Simulation Logic**
-   - **Functionality**: Simulate a series of upgrade attempts to gather statistics on outcomes—number of successes, failures, and average costs.
-   - **Setup**: Allows configuration of initial conditions such as the number of trials, starting star level, and whether special features are enabled.
-
-## Implementation Details
-The project is structured into various modules for maintainability and clarity. Here is a brief overview of the implementation:
-
-### 1. **Models**
-   - **Equipment**: Handles the state and behavior of the items being upgraded.
-   - **UpgradeResult**: Provides outcome types for easy result management.
-
-### 2. **Services**
-   - **ProbabilityProvider**: Centralizes the logic for fetching and adjusting probabilities based on dynamic game rules.
-   - **UpgradeService**: Uses the probability data to execute logic for determining upgrade outcomes.
-   - **CostCalculator**: Implements the formula for calculating upgrade costs.
-
-### 3. **Simulation Execution**
-   - A dedicated script to run the simulation multiple times, capturing essential metrics and providing insights into the effectiveness of different strategies.
-
-### 4. **Testing and Validation**
-   - Basic tests ensure the system behaves as expected under various configurations.
-
-## Running the Simulation
-The main entry point of the simulation is configured to allow easy adjustment of parameters and quick testing of different scenarios.
+#### 6. Testing and Fine-Tuning
+- [ ] Test the simulation with different configurations and scenarios:
+  - [ ] Meso budget exhaustion.
+  - [ ] High consecutive failure rates triggering the pity system.
+  - [ ] Safeguard usage for star levels 15/16 during event51015.
+  - [ ] Verify that all dynamic conditions (pity, safeguard, events) work as expected.
