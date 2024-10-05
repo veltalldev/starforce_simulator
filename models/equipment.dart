@@ -5,13 +5,13 @@ class Equipment {
 
   Equipment(this.level, this.currentStar) : isDestroyed = false;
 
-  void upgradeStar() {
+  void incrementStar() {
     if (currentStar < 25) {
       currentStar++;
     }
   }
 
-  void decreaseStar() {
+  void decrementStar() {
     if (currentStar > 0) {
       currentStar--;
     }

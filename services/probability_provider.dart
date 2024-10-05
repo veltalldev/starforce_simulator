@@ -21,7 +21,7 @@ class ProbabilityProvider {
   }
 
   double getSuccessRate() {
-    final star = state.currentStar;
+    final star = state.getCurrentStar();
 
     if (state.isEvent51015Active() || state.isPityActive()) {
       return 1.00; // 100% success rate for these special states
@@ -29,12 +29,14 @@ class ProbabilityProvider {
     return _table.getSuccessRate(star);
   }
 
-  double getFailMaintainRate() => _table.getFailMaintainRate(state.currentStar);
+  double getFailMaintainRate() =>
+      _table.getFailMaintainRate(state.getCurrentStar());
 
-  double getFailDecreaseRate() => _table.getFailDecreaseRate(state.currentStar);
+  double getFailDecreaseRate() =>
+      _table.getFailDecreaseRate(state.getCurrentStar());
 
   double getFailDestroyRate() {
-    final star = state.currentStar;
+    final star = state.getCurrentStar();
     final destroyRate = _table.getFailDestroyRate(star);
     return state.isSafeguardActive() ? 0.0 : destroyRate;
   }

@@ -1,60 +1,39 @@
 import 'dart:math';
-import '../models/equipment.dart';
+
 import '../models/upgrade_result.dart';
-import './probability_provider.dart';
+import '../services/probability_provider.dart';
 
 class UpgradeService {
-  final Equipment equipment;
+  final ProbabilityProvider probabilityProvider;
 
-  UpgradeService(this.equipment);
+  // Constructor that takes in the ProbabilityProvider (which is already async-loaded)
+  UpgradeService(this.probabilityProvider);
 
-  UpgradeResult attemptUpgrade(
-    bool pityEnabled,
-    int consecutiveFailures,
-    bool eventEnabled,
-    bool safeguardEnabled,
-  ) {
-    // reading loaded data
-    double successRate = ProbabilityProvider.getSuccessRate(
-        equipment.currentStar, pityEnabled, consecutiveFailures, eventEnabled);
-    double failMaintainRate =
-        ProbabilityProvider.getFailMaintainRate(equipment.currentStar);
-    double failDecreaseRate =
-        ProbabilityProvider.getFailDecreaseRate(equipment.currentStar);
-    double failDestroyRate = ProbabilityProvider.getFailDestroyRate(
-        equipment.currentStar, safeguardEnabled);
+  // Method to handle an upgrade attempt based on the probability table
+  UpgradeResult attemptUpgrade() {
+    // Use the probabilityProvider to determine success, fail, or destruction
+    final double successRate = probabilityProvider.getSuccessRate() / 100.0;
+    final double failDecreaseRate =
+        probabilityProvider.getFailDecreaseRate() / 100.0;
+    final double failDestroyRate =
+        probabilityProvider.getFailDestroyRate() / 100.0;
 
-    // roll the dice
-    double randomValue = Random().nextDouble();
+    // Randomly decide the result of the upgrade
+    final double roll = Random().nextDouble();
 
-    if (randomValue <= successRate) {
-      equipment.upgradeStar();
-      return UpgradeResult.success;
-    } else if (randomValue <= successRate + failMaintainRate) {
-      return UpgradeResult.failMaintain;
-    } else if (randomValue <=
-        successRate + failMaintainRate + failDecreaseRate) {
-      equipment.decreaseStar();
-      return UpgradeResult.failDecrease;
-    } else if (randomValue <=
-        successRate + failMaintainRate + failDecreaseRate + failDestroyRate) {
-      equipment.destroy();
-      return UpgradeResult.failDestroy;
-    } else {
-      return UpgradeResult.failMaintain;
+    if (roll < successRate) {
+      return UpgradeResult.success; // The upgrade was successful
     }
-    // if (randomValue <= successRate) {
-    //   equipment.upgradeStar();
-    //   return UpgradeResult.success;
-    // } else if (randomValue <= successRate + failMaintainRate) {
-    //   return UpgradeResult.failMaintain;
-    // } else if (randomValue <=
-    //     successRate + failMaintainRate + failDecreaseRate) {
-    //   equipment.decreaseStar();
-    //   return UpgradeResult.failDecrease;
-    // } else {
-    //   equipment.destroy();
-    //   return UpgradeResult.failDestroy;
-    // }
+
+    if (roll < successRate + failDecreaseRate) {
+      return UpgradeResult.failDecrease; // The star decreased
+    }
+
+    if (roll < successRate + failDecreaseRate + failDestroyRate) {
+      return UpgradeResult.failDestroy; // The equipment was destroyed
+    }
+
+    // If none of the above conditions were met, the upgrade failed, but the star remained the same
+    return UpgradeResult.failMaintain;
   }
 }

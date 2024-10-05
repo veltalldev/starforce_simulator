@@ -1,26 +1,37 @@
+import 'package:starforce_sim/models/equipment.dart';
 import 'package:starforce_sim/simulation/simulation_config.dart';
 
 class SimulationState {
   SimulationConfig config;
-  int currentStar;
+  Equipment equipment;
   int consecutiveFailures;
   // double currentMeso;
-
+  int successfulTrials;
+  int destroyedTrials;
+  double totalCost;
+  int totalAttempts;
   SimulationState({
     required this.config,
-    this.currentStar = 0,
-    this.consecutiveFailures = 0,
+    this.successfulTrials = 0,
+    this.destroyedTrials = 0,
+    this.totalAttempts = 0,
+    this.totalCost = 0.0,
     // consider implementing an ongoing tracker of remaining Meso
-  });
+  })  : equipment = Equipment(config.equipmentLevel, config.initialStar),
+        consecutiveFailures = 0;
 
-  // ================================ modifying stars
+  // ================================ star management
+  int getCurrentStar() {
+    return equipment.currentStar;
+  }
+
   void incrementStar() {
-    this.currentStar++;
+    equipment.incrementStar();
     consecutiveFailures = 0;
   }
 
   void decrementStar() {
-    this.currentStar--;
+    equipment.decrementStar();
     consecutiveFailures++;
   }
 
@@ -33,7 +44,7 @@ class SimulationState {
   // ================================= event management
   bool isEvent51015Active() {
     final eventEnabled = config.event51015;
-    final star = currentStar;
+    final star = getCurrentStar();
     bool is51015_stars = (star == 5 || star == 10 || star == 15);
     return eventEnabled && is51015_stars;
   }
@@ -41,9 +52,10 @@ class SimulationState {
   // ================================= safeguard management
   bool isSafeguardActive() {
     bool sgState = config.safeguardEnabled;
+    final star = getCurrentStar();
     final isPity = isPityActive();
     final is51015 = isEvent51015Active();
-    final isInSafeguardStarRange = (currentStar == 15 || currentStar == 16);
+    final isInSafeguardStarRange = (star == 15 || star == 16);
     if (is51015 || isPity || !isInSafeguardStarRange) {
       sgState = false;
     }
@@ -51,7 +63,7 @@ class SimulationState {
   }
 
   void resetState() {
-    currentStar = 0;
+    equipment = Equipment(config.equipmentLevel, config.initialStar);
     consecutiveFailures = 0;
   }
 }

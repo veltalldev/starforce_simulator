@@ -9,7 +9,7 @@ class CostProvider {
   CostProvider(this.config, this.state);
 
   double getCost() {
-    final star = state.currentStar;
+    final star = state.getCurrentStar();
     if (star < 0 || star > 25) {
       throw ArgumentError('Invalid star level: $star');
     }
@@ -28,7 +28,7 @@ class CostProvider {
   }
 
   double _calculateBaseCost() {
-    final star = state.currentStar;
+    final star = state.getCurrentStar();
     final equipmentLevel = config.equipmentLevel;
     double scale;
     int base;

@@ -3,9 +3,12 @@ class SimulationConfig {
   final bool safeguardEnabled;
   final bool event51015;
   final bool event30;
-  final double mesoBudget;
-  final int equipmentCount;
+  // final double mesoBudget;
+  // final int equipmentCount;
   final int equipmentLevel;
+  final int initialStar;
+  final int targetStar;
+  final int trialCount;
   final String probabilityDataFilePath;
 
   SimulationConfig({
@@ -13,14 +16,17 @@ class SimulationConfig {
     this.safeguardEnabled = false,
     this.event51015 = false,
     this.event30 = false,
-    this.mesoBudget = 20 * 1e9, // Default resource value
-    this.equipmentCount = 1,
+    // this.mesoBudget = 20 * 1e9, // Default resource value
+    // this.equipmentCount = 1,
     this.equipmentLevel = 150,
+    this.initialStar = 0,
+    this.targetStar = 22,
+    this.trialCount = 1000,
     this.probabilityDataFilePath = "./data/starcatch_probability_table.csv",
   }) {
-    if (mesoBudget <= 0) {
-      throw ArgumentError("Meso budget must be positive");
-    }
+    // if (mesoBudget <= 0) {
+    //   throw ArgumentError("Meso budget must be positive");
+    // }
     if (equipmentLevel <= 0) {
       throw ArgumentError("Equipment level must be positive");
     }
