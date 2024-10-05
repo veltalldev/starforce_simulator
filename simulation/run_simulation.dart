@@ -2,17 +2,17 @@ import '../models/equipment.dart';
 import '../models/upgrade_result.dart';
 import '../services/probability_provider.dart';
 import '../services/upgrade_service.dart';
-import '../services/cost_calculator.dart';
+import '../services/cost_provider.dart';
 
-void runSimulationWithFeatures(
-  int startStar,
-  int targetStar,
-  bool pityEnabled,
-  bool safeguardEnabled,
-  bool eventEnabled,
-) {
+void runSimulationWithFeatures({
+  required int startStar,
+  required int targetStar,
+  required int equipmentLevel,
+  required bool pityEnabled,
+  required bool safeguardEnabled,
+  required bool eventEnabled,
+}) {
   int totalTrials = 10000;
-  int equipmentLevel = 150;
 
   int totalCost = 0;
   int successfulTrials = 0;
@@ -30,7 +30,7 @@ void runSimulationWithFeatures(
 
     while (!equipment.isDestroyed && equipment.currentStar < targetStar) {
       trialCost +=
-          CostCalculator.calculateCost(equipmentLevel, equipment.currentStar);
+          CostProvider.calculateCost(equipmentLevel, equipment.currentStar);
       UpgradeResult result = upgradeService.attemptUpgrade(
         pityEnabled,
         consecutiveFailures,
@@ -71,11 +71,14 @@ void runSimulationWithFeatures(
   print('Destruction Rate: ${100 * destroyedTrials / totalTrials}%');
 }
 
-void main() async {
-  await ProbabilityProvider.ensureDataLoaded(
-    "./data/starcatch_probability_table.csv",
-  );
-
+void main() {
   // features: pity, safeguard, event
-  runSimulationWithFeatures(15, 20, true, true, true);
+  runSimulationWithFeatures(
+    startStar: 15,
+    targetStar: 23,
+    equipmentLevel: 200,
+    eventEnabled: true,
+    pityEnabled: true,
+    safeguardEnabled: true,
+  );
 }

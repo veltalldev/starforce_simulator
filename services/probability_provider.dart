@@ -1,52 +1,41 @@
+import 'package:starforce_sim/simulation/simulation_config.dart';
+import 'package:starforce_sim/simulation/simulation_state.dart';
+
 import '../models/probability_tables.dart';
 
 class ProbabilityProvider {
-  static final ProbabilityTable _table = ProbabilityTable();
+  final ProbabilityTable _table;
+  final SimulationConfig config;
+  final SimulationState state;
 
-  static Future<void> ensureDataLoaded(String filePath) async {
-    try {
-      if (_table.successRates.isEmpty) {
-        await _table.loadProbabilities(filePath);
-      }
-    } catch (e) {
-      print('Failed to load probability data: $e');
-      throw e; // Re-throw the exception to handle it further up the call stack.
-    }
+  ProbabilityProvider._(this._table, this.config, this.state);
+
+  static Future<ProbabilityProvider> createProvider(
+    SimulationConfig config,
+    SimulationState state,
+  ) async {
+    final filePath = config.probabilityDataFilePath;
+    final table = ProbabilityTable();
+    await table.loadProbabilities(filePath);
+    return ProbabilityProvider._(table, config, state);
   }
 
-  static void printTables() {
-    print("${_table.successRates}\n");
-    print("${_table.failMaintainRates}\n");
-    print("${_table.failDecreaseRates}\n");
-    print("${_table.failDestroyRates}\n");
+  double getSuccessRate() {
+    final star = state.currentStar;
+
+    if (state.isEvent51015Active() || state.isPityActive()) {
+      return 1.00; // 100% success rate for these special events
+    }
+    return _table.getSuccessRate(star);
   }
 
-  static double getSuccessRate(
-    int star,
-    bool pityEnabled,
-    int consecutiveFailures,
-    bool eventEnabled,
-  ) {
-    double successRate = _table.getSuccessRate(star);
+  double getFailMaintainRate() => _table.getFailMaintainRate(state.currentStar);
 
-    if (eventEnabled && (star == 5 || star == 10 || star == 15)) {
-      successRate = 1.00; // 100% success rate for these special events
-    }
-    if (pityEnabled && consecutiveFailures >= 2) {
-      successRate = 1.00; // Pity system guarantees success
-    }
-    return successRate;
-  }
+  double getFailDecreaseRate() => _table.getFailDecreaseRate(state.currentStar);
 
-  static double getFailMaintainRate(int star) =>
-      _table.getFailMaintainRate(star);
-
-  static double getFailDecreaseRate(int star) =>
-      _table.getFailDecreaseRate(star);
-
-  static double getFailDestroyRate(int star, bool safeguardEnabled) {
-    return safeguardEnabled && (star == 15 || star == 16)
-        ? 0.0
-        : _table.getFailDestroyRate(star);
+  double getFailDestroyRate() {
+    final star = state.currentStar;
+    final destroyRate = _table.getFailDestroyRate(star);
+    return state.isSafeguardActive() ? 0.0 : destroyRate;
   }
 }
