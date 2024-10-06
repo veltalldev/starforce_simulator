@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 import 'package:starforce_sim/simulation/simulator.dart';
 
 void main() {
-  group('Sequential One-Step Upgrade tests', () {
+  group('Testing individual Probabilities: success, maintain, decrease', () {
     test(
         'One-step upgrades from 0★ → 25★ should match expected success rates with relative tolerance',
         () async {
@@ -50,6 +50,100 @@ void main() {
           Number of trials: $size
           ''',
         );
+      }
+    });
+
+    // Test FailDecrease Rate
+    test('FailDecrease rate should match expected rates', () async {
+      const trialCount = 10000;
+      const tolerance = 0.05; // 5% multiplicative tolerance
+
+      // Loop through each upgrade step
+      for (int currentStar = 0; currentStar < 25; currentStar++) {
+        final targetStar = currentStar + 1;
+
+        // Create a Simulator instance with necessary configuration
+        final config = SimulationConfig(
+          trialCount: trialCount,
+          initialStar: currentStar,
+          targetStar: targetStar,
+          probabilityDataFilePath: "./data/probability_table.csv",
+        );
+        var simulator = await Simulator.create(config: config);
+
+        // Define expected failDecrease rates for each step from 0★ → 25★
+        final expectedFailDecreaseRate =
+            simulator.probabilityProvider.getFailDecreaseRate();
+        final delta = expectedFailDecreaseRate * tolerance;
+
+        // Run the simulation
+        var simOutcome = simulator.runSimulation();
+
+        // Filter outcomes that started from the initial star
+        var filteredOutcomes = simOutcome.outcomes
+            .where((o) => o.initialStar == currentStar)
+            .toList();
+
+        var size = filteredOutcomes.length;
+        var failDecrease = filteredOutcomes
+            .where((o) => o.result == UpgradeResult.failDecrease)
+            .length;
+
+        double actualFailDecreaseRate = failDecrease.toDouble() / size;
+
+        // Assert that the failDecrease rate is close to the expected rate
+        expect(actualFailDecreaseRate, closeTo(expectedFailDecreaseRate, delta),
+            reason: '''
+          Upgrade from $currentStar★ → $targetStar★ failed the decrease rate check.
+          Expected failDecrease rate: $expectedFailDecreaseRate, 
+          Actual: $actualFailDecreaseRate.
+          ''');
+      }
+    });
+    // Test FailMaintain Rate
+    test('FailMaintain rate should match expected rates', () async {
+      const trialCount = 10000;
+      const tolerance = 0.05; // 5% multiplicative tolerance
+
+      // Loop through each upgrade step
+      for (int currentStar = 0; currentStar < 25; currentStar++) {
+        final targetStar = currentStar + 1;
+
+        // Create a Simulator instance with necessary configuration
+        final config = SimulationConfig(
+          trialCount: trialCount,
+          initialStar: currentStar,
+          targetStar: targetStar,
+          probabilityDataFilePath: "./data/probability_table.csv",
+        );
+        var simulator = await Simulator.create(config: config);
+
+        final expectedFailMaintainRate =
+            simulator.probabilityProvider.getFailMaintainRate();
+        final delta = expectedFailMaintainRate * tolerance;
+
+        // Run the simulation
+        var simOutcome = simulator.runSimulation();
+
+        // Filter outcomes that started from the initial star
+        var filteredOutcomes = simOutcome.outcomes
+            .where((o) => o.initialStar == currentStar)
+            .toList();
+
+        var size = filteredOutcomes.length;
+        var failMaintain = filteredOutcomes
+            .where((o) => o.result == UpgradeResult.failMaintain)
+            .length;
+
+        double actualFailMaintainRate = failMaintain.toDouble() / size;
+
+        // Assert that the failMaintain rate is close to the expected rate
+        expect(actualFailMaintainRate, closeTo(expectedFailMaintainRate, delta),
+            reason: '''
+          Upgrade from $currentStar★ → $targetStar★ failed the maintain rate check.
+          Expected failMaintain rate: $expectedFailMaintainRate, 
+          Actual: $actualFailMaintainRate.
+          ''');
       }
     });
   });
