@@ -9,7 +9,7 @@ class UpgradeService {
   // Constructor that takes in the ProbabilityProvider (which is already async-loaded)
   UpgradeService(this.probabilityProvider);
 
-  // Method to handle an upgrade attempt based on the probability table
+  // Method to handle an upgrade attempt using the provided probability values
   UpgradeResult attemptUpgrade() {
     // Use the probabilityProvider to determine success, fail, or destruction
     final double successRate = probabilityProvider.getSuccessRate() / 100.0;
