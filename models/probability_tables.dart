@@ -11,10 +11,10 @@ class ProbabilityTable {
     // Assuming the first row is headers and subsequent rows follow the order: star, success, maintain, decrease, destroy
     for (int i = 1; i < data.length; i++) {
       // Convert and store as double immediately
-      successRates.add(double.parse(data[i][1].toString()) / 100.0);
-      failMaintainRates.add(double.parse(data[i][2].toString()) / 100.0);
-      failDecreaseRates.add(double.parse(data[i][3].toString()) / 100.0);
-      failDestroyRates.add(double.parse(data[i][4].toString()) / 100.0);
+      successRates.add(double.parse(data[i][1].toString()));
+      failMaintainRates.add(double.parse(data[i][2].toString()));
+      failDecreaseRates.add(double.parse(data[i][3].toString()));
+      failDestroyRates.add(double.parse(data[i][4].toString()));
     }
   }
 

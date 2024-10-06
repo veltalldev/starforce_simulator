@@ -1,10 +1,10 @@
-import '../models/upgrade_result.dart';
-import '../services/upgrade_service.dart';
-import '../services/probability_provider.dart';
-import '../services/cost_provider.dart';
-import 'simulation_config.dart';
-import 'simulation_state.dart';
-import 'simulation_result.dart';
+import 'package:starforce_sim/models/upgrade_result.dart';
+import 'package:starforce_sim/services/upgrade_service.dart';
+import 'package:starforce_sim/services/probability_provider.dart';
+import 'package:starforce_sim/services/cost_provider.dart';
+import 'package:starforce_sim/simulation/simulation_config.dart';
+import 'package:starforce_sim/simulation/simulation_state.dart';
+import 'package:starforce_sim/simulation/simulation_outcome.dart';
 
 class Simulator {
   final SimulationConfig config;
@@ -36,57 +36,34 @@ class Simulator {
     this.costProvider,
   );
 
-  SimulationResult runSimulation() {
-    // Simulation logic remains the same
+  SimulationOutcome runSimulation() {
+    final simOutcome = SimulationOutcome(config: config);
     for (int i = 0; i < config.trialCount; i++) {
       state.resetState();
-      final upgradeService = UpgradeService(probabilityProvider);
-
-      double trialCost = 0;
-      int attempts = 0;
-      bool reachedTarget = false;
+      final upgradeService = UpgradeService(
+        config: config,
+        state: state,
+        probabilityProvider: probabilityProvider,
+      );
 
       // TODO: Fix the destroy check
-      while (!state.equipment.isDestroyed &&
-          state.getCurrentStar() < config.targetStar) {
-        trialCost += costProvider.getCost();
-
-        UpgradeResult result = upgradeService.attemptUpgrade();
-
-        if (result == UpgradeResult.success) {
-          state.incrementStar();
-          if (state.getCurrentStar() >= config.targetStar) {
-            reachedTarget = true;
-            break;
-          }
-        } else if (result == UpgradeResult.failDestroy) {
-          state.equipment.destroy();
-          state.destroyedTrials++;
-          break;
-        } else if (result == UpgradeResult.failDecrease) {
-          state.decrementStar();
+      while (!state.equipment.isDestroyed && !state.reachedTargetStar()) {
+        if (i == 1) {
+          var probabilities = [
+            probabilityProvider.getSuccessRate(),
+            probabilityProvider.getFailMaintainRate(),
+            probabilityProvider.getFailDecreaseRate(),
+            probabilityProvider.getFailDestroyRate(),
+          ];
         }
+        UpgradeOutcome outcome = upgradeService.attemptUpgrade();
 
-        attempts++;
-      }
+        outcome.updateCost(costProvider.getCost());
 
-      state.totalAttempts += attempts;
-      state.totalCost += trialCost;
-
-      if (reachedTarget) {
-        state.successfulTrials++;
+        simOutcome.add(upgradeOutcome: outcome);
       }
     }
 
-    return SimulationResult(
-      totalTrials: config.trialCount,
-      successfulTrials: state.successfulTrials,
-      destroyedTrials: state.destroyedTrials,
-      averageCostPerAttempt: state.totalCost / state.totalAttempts / 1e9,
-      averageCostPerSuccess: state.successfulTrials > 0
-          ? (state.totalCost / state.successfulTrials) / 1e9
-          : 0,
-      destructionRate: 100 * state.destroyedTrials / config.trialCount,
-    );
+    return simOutcome;
   }
 }

@@ -18,7 +18,7 @@ void main() async {
   final simulator = await Simulator.create(config: config);
   final result = simulator.runSimulation();
 
-  result.toMap().entries.forEach((r) {
+  result.report().toMap().entries.forEach((r) {
     print(r);
   });
 }

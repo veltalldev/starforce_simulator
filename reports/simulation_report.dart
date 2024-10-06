@@ -1,22 +1,19 @@
-import 'package:starforce_sim/models/upgrade_result.dart';
-
-class SimulationResult {
+class SimulationReport {
   final int totalTrials;
   final int successfulTrials;
   final int destroyedTrials;
   final double averageCostPerAttempt;
   final double averageCostPerSuccess;
   final double destructionRate;
-  final List<UpgradeResult> results;
 
-  SimulationResult({
+  SimulationReport({
     required this.totalTrials,
     required this.successfulTrials,
     required this.destroyedTrials,
     required this.averageCostPerAttempt,
     required this.averageCostPerSuccess,
     required this.destructionRate,
-  }) : results = <UpgradeResult>[];
+  });
 
   // Convert the result into a map for easier display or further usage
   Map<String, dynamic> toMap() {
@@ -38,9 +35,5 @@ class SimulationResult {
         'Average Cost Per Attempt: ${averageCostPerAttempt}b\n'
         'Average Cost Per Success: ${averageCostPerSuccess}b\n'
         'Destruction Rate: $destructionRate%';
-  }
-
-  void add({required UpgradeResult result}) {
-    results.add(result);
   }
 }

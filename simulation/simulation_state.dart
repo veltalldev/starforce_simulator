@@ -35,6 +35,10 @@ class SimulationState {
     consecutiveFailures++;
   }
 
+  bool reachedTargetStar() {
+    return getCurrentStar() == config.targetStar;
+  }
+
   // ================================= pity management
   bool isPityActive() {
     final pityEnabled = config.pityEnabled;
