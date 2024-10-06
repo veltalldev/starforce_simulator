@@ -57,8 +57,11 @@ void main() async {
     'Destructions': destructionsList,
   };
 
+  var filePath = 'lib/reports/documents/meso-equip-cost_data.csv';
   export_csv(
-      data, 'lib/reports/products/documents/meso-equip-cost_analysis.csv');
+    data,
+    filePath,
+  );
 
   // Print results
   print('Success within cap: $successWithinCapPercentage');

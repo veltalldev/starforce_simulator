@@ -27,7 +27,7 @@ class UpgradeOutcome {
     reachedUpgradeTarget = targetStar == config.targetStar;
   }
 
-  void updateCost(double upgradeCost) {
-    upgradeCost = upgradeCost;
+  void updateCost(double cost) {
+    upgradeCost += cost;
   }
 }
