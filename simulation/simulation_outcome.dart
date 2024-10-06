@@ -1,5 +1,5 @@
 import 'package:starforce_sim/models/upgrade_result.dart';
-import 'package:starforce_sim/reports/simulation_report.dart';
+import 'package:starforce_sim/models/simulation_report.dart';
 import 'package:starforce_sim/simulation/simulation_config.dart';
 
 class SimulationOutcome {
