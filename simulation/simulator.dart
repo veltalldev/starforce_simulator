@@ -48,14 +48,6 @@ class Simulator {
 
       // TODO: Fix the destroy check
       while (!state.equipment.isDestroyed && !state.reachedTargetStar()) {
-        if (i == 1) {
-          var probabilities = [
-            probabilityProvider.getSuccessRate(),
-            probabilityProvider.getFailMaintainRate(),
-            probabilityProvider.getFailDecreaseRate(),
-            probabilityProvider.getFailDestroyRate(),
-          ];
-        }
         UpgradeOutcome outcome = upgradeService.attemptUpgrade();
 
         outcome.updateCost(costProvider.getCost());
