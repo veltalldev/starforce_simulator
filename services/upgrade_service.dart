@@ -28,12 +28,15 @@ class UpgradeService {
     // Randomly decide the result of the upgrade
     final double roll = Random().nextDouble();
 
+    final currentStar = state.getCurrentStar();
+
     if (roll < successRate) {
       state.incrementStar();
       return UpgradeOutcome(
         result: UpgradeResult.success,
         state: state,
         config: config,
+        initialStar: currentStar,
       ); // The upgrade was successful
     }
 
@@ -43,6 +46,7 @@ class UpgradeService {
         result: UpgradeResult.failDecrease,
         state: state,
         config: config,
+        initialStar: currentStar,
       ); // The star decreased
     }
 
@@ -53,6 +57,7 @@ class UpgradeService {
         result: UpgradeResult.failDestroy,
         state: state,
         config: config,
+        initialStar: currentStar,
       ); // The equipment was destroyed
     }
 
@@ -61,6 +66,7 @@ class UpgradeService {
       result: UpgradeResult.failMaintain,
       state: state,
       config: config,
+      initialStar: currentStar,
     );
   }
 }

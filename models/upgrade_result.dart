@@ -12,7 +12,8 @@ class UpgradeOutcome {
   final UpgradeResult result;
   final SimulationState state;
   final SimulationConfig config;
-  late final int star;
+  late final int targetStar;
+  late final int initialStar;
   late final bool reachedUpgradeTarget;
   double upgradeCost = 0.0;
 
@@ -20,9 +21,10 @@ class UpgradeOutcome {
     required this.result,
     required this.state,
     required this.config,
+    required this.initialStar,
   }) {
-    star = state.getCurrentStar();
-    reachedUpgradeTarget = star == config.targetStar;
+    targetStar = state.getCurrentStar();
+    reachedUpgradeTarget = targetStar == config.targetStar;
   }
 
   void updateCost(double upgradeCost) {
