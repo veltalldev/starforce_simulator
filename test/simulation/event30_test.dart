@@ -1,6 +1,6 @@
-import 'package:starforce_sim/simulation/simulation_config.dart';
+import 'package:starforce_sim_flutter/simulation/simulation_config.dart';
+import 'package:starforce_sim_flutter/simulation/simulator.dart';
 import 'package:test/test.dart';
-import 'package:starforce_sim/simulation/simulator.dart';
 
 void main() {
   group('Event30 Full Path Cost Tests', () {

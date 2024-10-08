@@ -1,7 +1,7 @@
-import 'package:starforce_sim/simulation/simulator.dart';
-import 'package:starforce_sim/simulation/simulation_config.dart';
-import 'package:starforce_sim/utils/export_helpers.dart';
-import 'package:starforce_sim/models/upgrade_result.dart';
+import 'package:starforce_sim_flutter/simulation/simulator.dart';
+import 'package:starforce_sim_flutter/simulation/simulation_config.dart';
+import 'package:starforce_sim_flutter/models/upgrade_result.dart';
+import 'package:starforce_sim_flutter/utils/export_helpers.dart';
 
 void main() async {
   const int trialCount = 10000;

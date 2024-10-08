@@ -1,10 +1,10 @@
-import 'package:starforce_sim/models/upgrade_result.dart';
-import 'package:starforce_sim/services/upgrade_service.dart';
-import 'package:starforce_sim/services/probability_provider.dart';
-import 'package:starforce_sim/services/cost_provider.dart';
-import 'package:starforce_sim/simulation/simulation_config.dart';
-import 'package:starforce_sim/simulation/simulation_state.dart';
-import 'package:starforce_sim/simulation/simulation_outcome.dart';
+import 'package:starforce_sim_flutter/models/upgrade_result.dart';
+import 'package:starforce_sim_flutter/services/upgrade_service.dart';
+import 'package:starforce_sim_flutter/services/probability_provider.dart';
+import 'package:starforce_sim_flutter/services/cost_provider.dart';
+import 'package:starforce_sim_flutter/simulation/simulation_config.dart';
+import 'package:starforce_sim_flutter/simulation/simulation_state.dart';
+import 'package:starforce_sim_flutter/simulation/simulation_outcome.dart';
 
 class Simulator {
   final SimulationConfig config;

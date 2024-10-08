@@ -1,5 +1,5 @@
-import 'package:starforce_sim/simulation/simulation_config.dart';
-import 'package:starforce_sim/simulation/simulator.dart';
+import 'package:starforce_sim_flutter/simulation/simulation_config.dart';
+import 'package:starforce_sim_flutter/simulation/simulator.dart';
 
 void main() async {
   final config = SimulationConfig(
