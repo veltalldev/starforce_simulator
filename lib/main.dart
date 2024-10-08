@@ -1,24 +1,21 @@
-import 'package:starforce_sim_flutter/simulation/simulation_config.dart';
-import 'package:starforce_sim_flutter/simulation/simulator.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:starforce_sim_flutter/screens/home_screen.dart';
 
-void main() async {
-  final config = SimulationConfig(
-    pityEnabled: true,
-    safeguardEnabled: true,
-    event51015: true,
-    event30: true,
-    // mesoBudget: 50 * 1e9,
-    equipmentLevel: 200,
-    initialStar: 15,
-    targetStar: 22,
-    trialCount: 10000,
-  );
+void main() {
+  runApp(ProviderScope(child: StarforceSimApp()));
+}
 
-  // Wait for the simulator to be created with all async loading complete
-  final simulator = await Simulator.create(config: config);
-  final result = simulator.runSimulation();
-
-  result.report().toMap().entries.forEach((r) {
-    print(r);
-  });
+class StarforceSimApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Starforce Sim',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: HomeScreen(),
+    );
+  }
 }
