@@ -1,13 +1,13 @@
-import 'dart:io';
 import 'package:csv/csv.dart';
-import 'dart:convert';
+
+import 'package:flutter/services.dart';
 
 class CSVDataProvider {
   static Future<List<List<dynamic>>> readCSV(String filePath) async {
-    final input = File(filePath).openRead();
-    return await input
-        .transform(utf8.decoder)
-        .transform(const CsvToListConverter())
-        .toList();
+    final csvString =
+        await rootBundle.loadString('data/starcatch_probability_table.csv');
+    final csvData = const CsvToListConverter().convert(csvString);
+
+    return csvData;
   }
 }
